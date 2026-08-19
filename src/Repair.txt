@@ -1,0 +1,77 @@
+[ New Request Created ]  -->  (POST /request)
+         │
+         ▼
+[ Under Review / Diagnosis ] -->  (PATCH /:id/status)
+         │
+         ▼
+[ In Repair / Waiting for Parts ] --> (PATCH /:id/status)
+         │
+         ▼
+[ Repair Completed / Ready for Pickup ] --> (PATCH /:id/status)
+         │
+         ▼
+[ Delivered / Closed ]  -->  (PATCH /:id/delivered)
+
+
+
+3. UI Component Breakdown for the Dashboard
+A. Main Dashboard Overview (/repairs/dashboard)
+KPI Metric Cards:
+
+Total Requests (GET /)
+
+In-Progress Repairs (filtered by status)
+
+Pending Delivery (PATCH /:id/delivered candidate items)
+
+Completed this Month
+
+Quick Actions Bar:
+
++ New Repair Request button (triggers creation modal or navigates to /requests/new).
+
+Recent Activity Feed: Real-time status update logs.
+
+B. Repair Request Table & Data Grid (/repairs/requests)
+Search & Filters:
+
+Filter by Status (Pending, In-Progress, Completed, Delivered).
+
+Filter by Product (GET /product/:productId).
+
+Filter by User/Customer (GET /user/:userId).
+
+Columns:
+
+Ticket ID | Customer Name | Product/Model | Issue Summary | Status Badge | Actions
+
+Row Actions:
+
+View Details (GET /:id)
+
+Quick Status Dropdown (PATCH /:id/status)
+
+Mark as Delivered button (PATCH /:id/delivered)
+
+Delete / Cancel (DELETE /:id) with confirmation dialog
+
+C. Repair Details View (/repairs/requests/:id)
+Header: Ticket #ID, Creation Date, Current Status Badge, Priority Level.
+
+Customer & Product Info Panel:
+
+Customer details with a direct link to view all their past tickets (/user/:userId).
+
+Device/Product details with warranty & previous repair logs (/product/:productId).
+
+Status Stepper / Timeline: Visual progress tracker from submission to delivery.
+
+Cost & Notes Breakdown: Parts replaced, labor cost, diagnosis notes.
+
+Action Toolbar:
+
+Edit Ticket (opens modal -> PUT /:id)
+
+Update Status (select step -> PATCH /:id/status)
+
+Mark Delivered (one-click with confirmation -> PATCH /:id/delivered)

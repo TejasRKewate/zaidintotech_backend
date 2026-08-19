@@ -1,0 +1,83 @@
+1️⃣ Dashboard Overview & Metrics
+
+Yeh shop owner/admin ke liye overall status dekhne ke liye hai.
+
+Features:
+
+Total Repair Requests count
+
+In-Progress Repairs count
+
+Ready for Delivery items count
+
+Completed Repairs (This Month)
+
+Recent Activity Logs (Status updates)
+
+➕ New Repair Request Button
+
+2️⃣ Repair Requests Management (Table View)
+
+Yeh all repair tickets ko manage, search aur filter karne ke liye hai.
+
+Features:
+
+Search by Ticket ID / Customer Name
+
+Filter by Status (Pending, In-Progress, Ready, Delivered)
+
+Filter by Product / Device
+
+Filter by Customer
+
+Quick Status Change Dropdown
+
+Mark as Delivered Button
+
+Delete / Cancel Request
+
+Flow:
+Customer Shop par aaya / Online Request aayi
+↓
+Receptionist Create Repair Request
+↓
+Ticket ID Generate hui
+↓
+Status: "Pending / Received"
+↓
+Technician ko Assign hua
+
+3️⃣ Repair Details & Technician Workflow (Detail View)
+
+Yeh technician/admin ke liye repair ka detailed work track karne ke liye hai.
+
+Features:
+
+Customer Details (Past repair history link)
+
+Product/Device Details (Serial number, warranty)
+
+Issue Description & Diagnosis Notes
+
+Parts Replaced & Labor Cost Breakdown
+
+Visual Status Stepper (Live Progress)
+
+Edit Ticket Details
+
+Force Status Update (Pending ➔ In Diagnosis ➔ In Repair ➔ Ready ➔ Delivered)
+
+Flow:
+Device Received (Pending)
+↓
+Diagnosis & Cost Estimation
+↓
+Waiting for Parts / In Repair
+↓
+Repair Completed (Ready for Pickup)
+↓
+Payment & Invoice
+↓
+Mark Delivered / Handed over to Customer
+↓
+Ticket Close

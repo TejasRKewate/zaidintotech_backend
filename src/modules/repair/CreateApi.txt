@@ -1,0 +1,108 @@
+
+http://localhost:5000/api/repairs/request  ---- POST API
+
+json body -- {
+    {
+  "user": "66bc812a10f9a21b34e56789",
+  "product": "66bc815b10f9a21b34e56790",
+  "deviceModel": "MacBook Pro 16\" (M2, 2023)",
+  "serialNumber": "C02G81A9MD6R",
+  "issueDescription": "Display flickering intermittently, trackpad not clicking.",
+  "priority": "High",
+  "estimatedCost": 250.00
+}
+---
+Response ---
+
+    {
+  "success": true,
+  "message": "Repair request created successfully.",
+  "data": {
+    "user": "66bc812a10f9a21b34e56789",
+    "product": "66bc815b10f9a21b34e56790",
+    "issueDescription": "Display flickering intermittently, trackpad not clicking.",
+    "status": "Received",
+    "repairCost": 0,
+    "technicianName": "",
+    "remarks": "",
+    "isDelivered": false,
+    "_id": "6a7ee182a9903c128d4c3e6a",
+    "createdAt": "2026-08-14T09:36:02.556Z",
+    "updatedAt": "2026-08-14T09:36:02.556Z",
+    "__v": 0
+  }
+}
+
+
+2) Get All Repair Requests -- GET MethodSS
+curl -X GET "http://localhost:5000/api/repairs?page=1&limit=10" \
+  -H "Content-Type: application/json"
+
+3) Get Repair Request By ID
+Method: GET
+
+URL: http://localhost:5000/api/repairs/6a7ee182a9903c128d4c3e6a
+
+4)Get Repairs By Product ID
+Method: GET
+
+URL: http://localhost:5000/api/repairs/product/66bc815b10f9a21b34e56790  
+Response -- {
+  "success": true,
+  "count": 1,
+  "data": [
+    {
+      "_id": "6a7ee182a9903c128d4c3e6a",
+      "user": null,
+      "product": "66bc815b10f9a21b34e56790",
+      "issueDescription": "Display flickering intermittently, trackpad not clicking.",
+      "status": "Received",
+      "repairCost": 0,
+      "technicianName": "",
+      "remarks": "",
+      "isDelivered": false,
+      "createdAt": "2026-08-14T09:36:02.556Z",
+      "updatedAt": "2026-08-14T09:36:02.556Z",
+      "__v": 0
+    }
+  ]
+}
+
+
+5)Update Full Repair Request
+Method: PUT
+
+URL: http://localhost:5000/api/repairs/66bc820010f9a21b34e56799
+
+
+
+6) Update Repair Status
+Method: PATCH
+
+URL: http://localhost:5000/api/repairs/66bc820010f9a21b34e56799/status
+
+Request Body (JSON):
+JSON
+{
+  "status": "IN_PROGRESS",
+  "technicianId": "66bc899910f9a21b34e56111",
+  "statusRemark": "Parts arrived, repair initiated."
+}
+
+7)Mark Repair as Delivered
+Method: PATCH
+
+URL: http://localhost:5000/api/repairs/66bc820010f9a21b34e56799/delivered
+
+Request Body (JSON):
+JSON
+{
+  "deliveryNotes": "Delivered to customer via courier / Handed over in person.",
+  "receivedBy": "Jane Doe",
+  "paymentStatus": "PAID"
+}
+
+8)Delete Repair Request
+Method: DELETE
+
+URL: http://localhost:5000/api/repairs/66bc820010f9a21b34e56799

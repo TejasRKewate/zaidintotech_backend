@@ -1,0 +1,287 @@
+import User from "./user.model.js";
+
+// Create
+export const create = async (data) => {
+  return await User.create(data);
+};
+
+// Find Email
+export const findByEmail = async (email) => {
+  return await User.findOne({ email });
+};
+
+// Find Phone
+export const findByPhone = async (phone) => {
+  return await User.findOne({ phone });
+};
+
+// Count Users
+export const countUsers = async () => {
+  return await User.countDocuments();
+};
+
+// Get All Users
+export const findAll = async ({ skip, limit, search }) => {
+  // const query = {
+  //   isDeleted: false,
+  //   $or: [
+  //     { firstName: { $regex: search, $options: "i" } },
+  //     { lastName: { $regex: search, $options: "i" } },
+  //     { email: { $regex: search, $options: "i" } },
+  //     { employeeCode: { $regex: search, $options: "i" } },
+  //   ],
+  // };
+
+
+
+  const query = {
+    isDeleted: false,
+    $or: [
+      { firstName: { $regex: search, $options: "i" } },
+      { lastName: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+      { employeeId: { $regex: search, $options: "i" } },
+    ],
+  };
+
+  const users = await User.find(query)
+    .select("-password")
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  const total = await User.countDocuments(query);
+
+  return {
+    users,
+    total,
+    page: Math.ceil(skip / limit) + 1,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
+// Get User
+export const findById = async (id) => {
+  return await User.findById(id).select("-password");
+};
+
+// Update
+export const update = async (id, data) => {
+  return await User.findByIdAndUpdate(id, data, {
+    new: true,
+  }).select("-password");
+};
+
+// Soft Delete
+export const softDelete = async (id) => {
+  return await User.findByIdAndUpdate(
+    id,
+    {
+      isDeleted: true,
+      status: "INACTIVE",
+    },
+    { new: true }
+  );
+};
+
+// ===============================
+// Get All Employees
+// ===============================
+// export const findEmployees = async () => {
+
+//   const employees = await User.find({
+
+//     role: {
+//   $in: [
+//     "RECEPTIONIST",
+//     "TECHNICIAN",
+//     "INVENTORY",
+//     "ACCOUNTANT",
+//     "OTHER"
+//   ]
+// },
+//     // role: {
+//     //   $in: [
+//     //     "RECEPTIONIST",
+//     //     "TECHNICIAN",
+//     //     "INVENTORY",
+//     //     "ACCOUNTANT"
+//     //   ]
+//     // },
+//     isDeleted: false
+//   }).select("-password");
+
+//   console.log("Employees =>", employees);
+
+//   return employees;
+// };
+
+
+
+export const findEmployees = async () => {
+  const employees = await User.find({
+    role: {
+      $in: [
+        "RECEPTIONIST",
+        "TECHNICIAN",
+        "INVENTORY",
+        "ACCOUNTANT",
+        "OTHER"
+      ]
+    },
+    isDeleted: false
+  })
+    .populate("shift", "name startTime endTime") // 👈 POPULATE GOES HERE
+    .select("-password")
+    .lean(); // Optional: improves query speed
+
+  return employees;
+};
+
+// ===============================
+// Update Employee Status
+// ===============================
+
+export const updateEmployeeStatus = async (
+
+  req,
+
+  res
+
+) => {
+
+  try {
+
+    const employee =
+      await userService.updateEmployeeStatus(
+
+        req.params.id,
+
+        req.body.status
+
+      );
+
+    return res.status(200).json({
+
+      success: true,
+
+      message: "Employee Status Updated",
+
+      data: employee,
+
+    });
+
+  }
+
+  catch (error) {
+
+    return res.status(400).json({
+
+      success: false,
+
+      message: error.message,
+
+    });
+
+  }
+
+};
+
+
+
+
+
+// ===============================
+// Update Employee Salary
+// ===============================
+
+export const updateSalary = async (id, salaryData) => {
+
+  return await User.findByIdAndUpdate(
+    id,
+    {
+      salaryDetails: salaryData
+    },
+    {
+      new: true
+    }
+  );
+
+};
+
+
+
+// ===============================
+// Add Salary History
+// ===============================
+
+export const addSalaryHistory = async (
+  id,
+  salaryData
+) => {
+
+  return await User.findByIdAndUpdate(
+
+    id,
+
+    {
+      $push: {
+        salaryHistory: salaryData
+      }
+    },
+
+    {
+      new: true
+    }
+
+  );
+
+};
+
+
+
+// ===============================
+// Get Salary History
+// ===============================
+
+export const getSalaryHistory = async (id) => {
+
+  const user = await User.findById(id)
+    .select(
+      "firstName lastName employeeId salaryHistory salaryDetails"
+    );
+
+
+  return user;
+
+};
+
+
+export const saveResetToken = async (
+  userId,
+  token,
+  expiry
+) => {
+  return await User.findByIdAndUpdate(userId, {
+    resetPasswordToken: token,
+    resetPasswordExpires: expiry,
+  });
+};
+
+export const findByResetToken = async (token) => {
+  return await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: new Date() },
+  });
+};
+
+export const updatePassword = async (
+  userId,
+  password
+) => {
+  return await User.findByIdAndUpdate(userId, {
+    password,
+    resetPasswordToken: null,
+    resetPasswordExpires: null,
+  });
+};

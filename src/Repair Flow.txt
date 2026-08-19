@@ -1,0 +1,21 @@
+Repair Code flow frontend and backend 
+
+	Repair Dashboard 
+
+	Create Repair  -> Create repair form
+	
+	Get All Repair -> Show All Repairs
+
+	Get Single Repair by userid (all info about one repair) -> Show  all details of one repair
+
+	
+	Get Single Repair by Product Id (all info about one repair) -> Show  all details of one repair product Id
+
+	Update Repair 
+	
+	Update Repair Status by Id -> Show Repair Status 
+
+	Update Repair Staus  by Id  ->Show Repair Status (Deliverd) Mark Repair Delivered
+
+	Delete Repair -> Delete Repair
+	

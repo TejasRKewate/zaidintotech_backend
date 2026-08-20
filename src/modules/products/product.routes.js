@@ -2,16 +2,13 @@ import express from "express";
 
 
 import {
-
-createProduct,
-getProducts,
-getProductById,
-updateProduct,
-deleteProduct,
-searchProduct,
-getShopProducts,
-  getProductsAddedByReceptionist, 
-  getProductsOrderedByReceptionist
+    createProduct, getProducts, getProductById,
+    updateProduct,
+    deleteProduct,
+    searchProduct,
+    getShopProducts,
+    getProductsAddedByReceptionist,
+    getProductsOrderedByReceptionist
 
 } from "./product.controller.js";
 import {
@@ -20,24 +17,17 @@ import {
 } from "./product.validation.js";
 
 import {
-validate
+    validate
 } from "../../common/middleware/validate.middleware.js";
 
 
 import { verifyToken } from "../../common/middleware/auth.middleware.js";
 import { allowRoles } from "../../common/middleware/role.middleware.js";
 
-import {productUpload} from "../../common/middleware/upload.middleware.js";
+import { productUpload } from "../../common/middleware/upload.middleware.js";
 
 const router = express.Router();
 
-
-
-
-
-
-
-  
 router.get('/receptionist/added/:receptionistId', getProductsAddedByReceptionist);
 
 router.get('/receptionist/ordered/:receptionistId', getProductsOrderedByReceptionist);
@@ -55,7 +45,7 @@ router.post(
     verifyToken,
     allowRoles("ADMIN"),
     validate(createProductValidation),
-    productUpload.array("images",5),
+    productUpload.array("images", 5),
     createProduct
 
 );
@@ -144,18 +134,7 @@ router.delete(
     verifyToken,
     allowRoles("ADMIN"),
     deleteProduct
-);
-
-
-
-
-
-
-
-
-
-
-
+)
 
 
 export default router;

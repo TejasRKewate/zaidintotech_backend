@@ -31,5 +31,5 @@ const walkInOrderSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const walkInOrder = mongoose.model("WalkInOrder", walkInOrderSchema);
-export default walkInOrder;
+const WalkInOrder = mongoose.model("WalkInOrder", walkInOrderSchema);
+export default WalkInOrder;

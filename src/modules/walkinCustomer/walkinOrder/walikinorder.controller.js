@@ -46,15 +46,15 @@ export const getOrderById = async (req, res) => {
 // POST /api/orders (Draft or direct order creation)
 export const createOrder = async (req, res) => {
     try {
-        const { customerId, receptionistId, items, discountTotal = 0, status = "pending_payment" } = req.body;
+        const { customerId, receptionistId, items = [], discountTotal = 0, status = "pending_payment" } = req.body;
 
         let subtotal = 0;
         let taxTotal = 0;
 
         const processedItems = items.map((item) => {
-            const lineSubtotal = item.unitPrice * item.quantity;
-            const lineTax = (lineSubtotal * (item.taxRate || 0)) / 100;
-            const lineTotal = lineSubtotal + lineTax - (item.discount || 0);
+            const lineSubtotal = Number(item.unitPrice || 0) * Number(item.quantity || 1);
+            const lineTax = (lineSubtotal * Number(item.taxRate || 0)) / 100;
+            const lineTotal = lineSubtotal + lineTax - Number(item.discount || 0);
 
             subtotal += lineSubtotal;
             taxTotal += lineTax;
@@ -62,7 +62,7 @@ export const createOrder = async (req, res) => {
             return { ...item, taxAmount: lineTax, total: lineTotal };
         });
 
-        const grandTotal = subtotal + taxTotal - discountTotal;
+        const grandTotal = subtotal + taxTotal - Number(discountTotal || 0);
         const orderNumber = `ORD-${Date.now().toString().slice(-6)}`;
 
         const newOrder = new WalkInOrder({
@@ -70,7 +70,7 @@ export const createOrder = async (req, res) => {
             customer: customerId,
             receptionistId,
             items: processedItems,
-            subtotal, walkInInvoice,
+            subtotal,
             discountTotal,
             taxTotal,
             grandTotal,

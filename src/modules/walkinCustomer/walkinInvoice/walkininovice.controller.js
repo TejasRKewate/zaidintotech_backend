@@ -40,40 +40,44 @@ export const getInvoiceById = async (req, res) => {
     }
 };
 
-// POST /api/invoices (Standalone invoice generation for an existing order)
+// POST /api/invoices
 export const createInvoice = async (req, res) => {
     try {
         const { orderId, customerId, paymentMethod, cashAmount = 0, upiAmount = 0, upiTransactionId } = req.body;
 
-        const order = await WalkInOrder.findById(orderId);
+        // Use lowercase walkInOrder matching your import
+        const order = await walkInOrder.findById(orderId);
         if (!order) {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        const totalPaid = (paymentMethod === "CASH" ? cashAmount : 0) +
-            (paymentMethod === "UPI" ? upiAmount : 0) +
-            (paymentMethod === "SPLIT" ? (cashAmount + upiAmount) : 0);
+        const cAmt = Number(cashAmount) || 0;
+        const uAmt = Number(upiAmount) || 0;
+
+        const totalPaid =
+            paymentMethod === "CASH" ? cAmt :
+                paymentMethod === "UPI" ? uAmt :
+                    paymentMethod === "SPLIT" ? (cAmt + uAmt) : 0;
 
         const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
 
         const newInvoice = new walkInInvoice({
             invoiceNumber,
             order: orderId,
-            customer: customerId,
+            customer: customerId || order.customer,
             amountDue: order.grandTotal,
             amountPaid: totalPaid,
             paymentStatus: totalPaid >= order.grandTotal ? "paid" : "partially_paid",
             paymentDetails: {
                 method: paymentMethod,
-                cashAmount,
-                upiAmount,
+                cashAmount: cAmt,
+                upiAmount: uAmt,
                 upiTransactionId: upiTransactionId || null,
             },
         });
 
         await newInvoice.save();
 
-        // Mark order completed if fully paid
         if (totalPaid >= order.grandTotal) {
             order.status = "completed";
             await order.save();
@@ -84,7 +88,6 @@ export const createInvoice = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
-
 // DELETE /api/invoices/:id
 export const deleteInvoice = async (req, res) => {
     try {

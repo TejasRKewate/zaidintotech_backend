@@ -70,7 +70,7 @@ export const createOrder = async (req, res) => {
             customer: customerId,
             receptionistId,
             items: processedItems,
-            subtotal,
+            subtotal, walkInInvoice,
             discountTotal,
             taxTotal,
             grandTotal,
@@ -93,7 +93,7 @@ export const deleteOrder = async (req, res) => {
         }
 
         // Also remove associated invoices
-        await Invoice.deleteMany({ order: req.params.id });
+        await walkInInvoice.deleteMany({ order: req.params.id });
 
         res.status(200).json({ success: true, message: "Order and linked invoices deleted" });
     } catch (error) {

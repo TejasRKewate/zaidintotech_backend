@@ -10,7 +10,7 @@ export const getInvoices = async (req, res) => {
         if (paymentStatus) filter.paymentStatus = paymentStatus;
         if (paymentMethod) filter["paymentDetails.method"] = paymentMethod;
 
-        const invoices = await Invoice.find(filter)
+        const invoices = await walkInInvoice.find(filter)
             .populate("customer", "name phone email")
             .populate("order", "orderNumber grandTotal status items")
             .sort({ createdAt: -1 });
@@ -24,7 +24,7 @@ export const getInvoices = async (req, res) => {
 // GET /api/invoices/:id
 export const getInvoiceById = async (req, res) => {
     try {
-        const invoice = await Invoice.findById(req.params.id)
+        const invoice = await walkInInvoice.findById(req.params.id)
             .populate("customer")
             .populate({
                 path: "order",
@@ -56,7 +56,7 @@ export const createInvoice = async (req, res) => {
 
         const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
 
-        const newInvoice = new Invoice({
+        const newInvoice = new walkInInvoice({
             invoiceNumber,
             order: orderId,
             customer: customerId,
@@ -88,7 +88,7 @@ export const createInvoice = async (req, res) => {
 // DELETE /api/invoices/:id
 export const deleteInvoice = async (req, res) => {
     try {
-        const invoice = await Invoice.findByIdAndDelete(req.params.id);
+        const invoice = await walkInInvoice.findByIdAndDelete(req.params.id);
         if (!invoice) {
             return res.status(404).json({ success: false, message: "Invoice not found" });
         }

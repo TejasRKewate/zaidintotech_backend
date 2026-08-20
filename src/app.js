@@ -29,6 +29,8 @@ import newAttendanceRoutes from "./modules/attendanceNew/newattendance.routes.js
 import newRepair from './modules/repairNew/newrepair.routes.js'
 import serviceCatlog from './modules/repairNew/serviceCatlog/servicecatlog.routes.js'
 import walkinCustomer from './modules/walkinCustomer/walkin.routes.js'
+import wailkInOrder from './modules/walkinCustomer/walkinOrder/walkinorder.routes.js'
+import wailkInInvoice from './modules/walkinCustomer/walkinInvoice/walkininvoice.routes.js'
 
 const app = express();
 
@@ -89,7 +91,9 @@ app.use("/api/newRepair", newRepair)
 app.use('/api/repair-service', serviceCatlog)
 //app.use('/api/repairs', repairRoutes)
 app.use("/api/walkin", walkinCustomer)
-export default app;
+api.use('/api/walkin-order', wailkInOrder)
+app.use('/api/walkin-invoice', wailkInInvoice)
+export default app
 
 
 
